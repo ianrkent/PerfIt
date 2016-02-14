@@ -46,6 +46,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BatchInstrumentation\BatchInformation.cs" />
+    <Compile Include="BatchInstrumentation\BatchProcessInstrumentor.cs" />
+    <Compile Include="BatchInstrumentation\IBatchCounterHandler.cs" />
+    <Compile Include="BatchInstrumentation\IInstrumentationMetricHandler.cs" />
+    <Compile Include="BatchInstrumentation\InstrumentorBase.cs" />
     <Compile Include="Handlers\CurrentConcurrentCountHandler.cs" />
     <Compile Include="Handlers\NumberOfOperationsPerSecondHandler.cs" />
     <Compile Include="IInstrumentationDiscoverer.cs" />
