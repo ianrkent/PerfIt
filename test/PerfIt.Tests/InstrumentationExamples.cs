@@ -1,6 +1,7 @@
 ﻿namespace PerfIt.Tests
 {
     using System.Diagnostics;
+    using System.Threading;
 
     using PerfIt.BatchInstrumentation;
 
@@ -11,16 +12,27 @@
         [Fact]
         public void ExampleUsage()
         {
+            var bogStandardInstrumentor = CreateStandardInstrumentor();
+            bogStandardInstrumentor.Instrument(
+                () =>
+                {
+                    // do some work, ignorant of any instrumentation data
+                    Thread.Sleep(50);
+                });
+        }
+
+        [Fact]
+        public void ExampleUsageWithAspectInstrumentationInfo()
+        {
             var batchInstrumentor = CreateBatchProcessInstrumentor();
             batchInstrumentor.Instrument(
                 aspectInstrumentationInfo =>
-                {
-                    // do some work, and then update the aspects Instrumentation Info
-                    aspectInstrumentationInfo.TotalItemsInBatch = 10;
-                    aspectInstrumentationInfo.FailedCount = 1;
-                    aspectInstrumentationInfo.SuccessfullyProcessedCount = 9;
-                });
-
+                    {
+                        // do some work, and then update the aspects Instrumentation Info
+                        aspectInstrumentationInfo.TotalItemsInBatch = 10;
+                        aspectInstrumentationInfo.FailedCount = 1;
+                        aspectInstrumentationInfo.SuccessfullyProcessedCount = 9;
+                    });
         }
 
         private static BatchProcessInstrumentor CreateBatchProcessInstrumentor()
