@@ -1,6 +1,8 @@
 namespace PerfIt.Tests
 {
     using System;
+    using System.Diagnostics;
+    using System.Net;
 
     using FakeItEasy;
 
@@ -74,22 +76,7 @@ namespace PerfIt.Tests
                 }
             }
         }
-
-        //[Fact]
-        //public void AllowThePerformanceCounterHandlersToShareContextBetweenStartAndEnd()
-        //{
-        //    Dictionary<string, object> theAspectsCallContext = null;
-        //    var counterHandler = A.Fake<IInstrumentationMetricHandler<BatchInformation>>();
-        //    var aspect = A.Fake<Action<BatchInformation>>();
-        //    A.CallTo(() => counterHandler.OnRequestStarting(A<BatchInformation>._))
-        //        .Invokes((Dictionary<string, object> aspectCallContext) => theAspectsCallContext = aspectCallContext);
-
-        //    this.target.AddCounterHandler(counterHandler);
-
-        //    this.target.Instrument(aspect);
-
-        //    A.CallTo(() => counterHandler.OnRequestEnding(A<BatchInformation>._, theAspectsCallContext)).MustHaveHappened();
-        //}
-
     }
+
+
 }

@@ -76,6 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BatchProcessInstrumentorShould.cs" />
+    <Compile Include="InstrumentationExamples.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleInstrumenterTests.cs" />
   </ItemGroup>

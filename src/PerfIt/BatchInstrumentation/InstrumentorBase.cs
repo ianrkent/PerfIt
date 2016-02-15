@@ -2,39 +2,56 @@ namespace PerfIt.BatchInstrumentation
 {
     using System;
     using System.Collections.Generic;
-    using System.Threading.Tasks;
 
-    public abstract class InstrumentorBase<T>
+    public class Instrumentor
     {
-        private readonly List<IInstrumentationMetricHandler<T>> metricHandlers = new List<IInstrumentationMetricHandler<T>>();
+        protected readonly List<IInstrumentationMetricHandler> metricHandlers = new List<IInstrumentationMetricHandler>();
 
-        protected abstract T CreateAspectInstrumentationInfo();
+        public void Instrument(Action aspect, string instrumentationContext = null)
+        {
+            this.metricHandlers.ForEach(handler =>
+            {
+                handler.OnRequestStarting();
+            });
 
-        public void Instrument(Action<T> aspect, string instrumentationContext = null)
+            aspect();
+
+            this.metricHandlers.ForEach(handler => handler.OnRequestEnding());
+        }
+
+        public void AddMetricHandler(IInstrumentationMetricHandler handler)
+        {
+            this.metricHandlers.Add(handler);
+        }
+    }
+
+    /// <summary>
+    /// Generic version of InstrumentorBase, that allows the user to sepcifiy the Type that is to be used as the aspect information
+    /// </summary>
+    /// <typeparam name="TAspectInstrumentationInfo">Type that holds information that the aspect can record for use by the instrumentation</typeparam>
+    public abstract class InstrumentorBase<TAspectInstrumentationInfo> : Instrumentor
+    {
+        private readonly List<IInstrumentationMetricHandler<TAspectInstrumentationInfo>> genericMetricHandlers = new List<IInstrumentationMetricHandler<TAspectInstrumentationInfo>>();
+
+        protected abstract TAspectInstrumentationInfo CreateAspectInstrumentationInfo();
+
+        public void Instrument(Action<TAspectInstrumentationInfo> aspect, string instrumentationContext = null)
         {
             var aspectInstrumentationInfo = this.CreateAspectInstrumentationInfo();
 
-            this.metricHandlers.ForEach(handler =>
+            this.genericMetricHandlers.ForEach(handler =>
             {
                 handler.OnRequestStarting(aspectInstrumentationInfo);
             });
 
             aspect(aspectInstrumentationInfo);
 
-            this.metricHandlers.ForEach(handler => handler.OnRequestEnding(aspectInstrumentationInfo));
+            this.genericMetricHandlers.ForEach(handler => handler.OnRequestEnding(aspectInstrumentationInfo));
         }
 
-        public Task InstrumentAsync(
-            Func<T, Task> asyncAspect,
-            T aspectInstrumentationOutput,
-            string instrumentationContext = null)
+        public void AddMetricHandler(IInstrumentationMetricHandler<TAspectInstrumentationInfo> handler)
         {
-            throw new NotImplementedException();
-        }
-
-        public void AddMetricHandler(IInstrumentationMetricHandler<T> handler)
-        {
-            this.metricHandlers.Add(handler);
+            this.genericMetricHandlers.Add(handler);
         }
     }
 }
